@@ -1,7 +1,6 @@
-package com.hrv.task_manager;
+package com.hrv.taskmanager;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 //@SpringBootTest
 class TaskManagerApplicationTests {

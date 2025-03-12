@@ -1,0 +1,157 @@
+openapi: 3.0.3
+info:
+  title: Task Manager
+  description: |-
+    This is a Task Manager Server based on the OpenAPI 3.0 specification.
+  contact:
+    email: 125bharrio@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - url: task-manager/api
+tags:
+  - name: Authentication
+    description: Endpoints to manage authentication.
+  - name: Task Management
+    description: Main endpoints for task management.
+  - name: User Management
+    description: Endpoints to manage users.
+  - name: Notifications
+    description: Endpoints to manage notifications.
+security:
+  - BearerAuth: []
+paths:
+  "/api/auth/register":
+    post:
+      tags:
+        - Authentication
+      summary: User registration.
+      description: User registration.
+      operationId: register
+      requestBody:
+        $ref: "#/components/requestBodies/Register"
+      responses:
+        "200":
+          $ref: "#/components/responses/Ok"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Ok"
+        "404":
+          $ref: "#/components/responses/Ok"
+        "415":
+          $ref: "#/components/responses/Ok"
+        "500":
+          $ref: "#/components/responses/Ok"
+        "503":
+          $ref: "#/components/responses/Ok"
+        "504":
+          $ref: "#/components/responses/Ok"
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Error:
+      type: object
+      description: "Data structure containing the details for errors"
+      properties:
+        code:
+          type: "string"
+          example: "ERR001"
+        message:
+          type: "string"
+          example: "Invalid parameters"
+        description:
+          type: "string"
+          description: "Information about the returned error"  
+          example: "Invalid parameters sent on request body"
+    RegisterRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: The email of the user.
+        password:
+          type: string
+          format: password
+          description: The password of the user.
+        name:
+          type: string
+          description: The name of the user.
+        surname:
+          type: string
+          description: The surname of the user.
+        birthdate:
+          type: string
+          format: date
+          description: The birthdate of the user.  
+  requestBodies:
+    Register:
+      description: "Data structure containing information to register the user"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RegisterRequest'
+  responses:
+    Ok:
+     description: "OK"
+     content:
+       application/json:
+         schema:
+           $ref: "#/components/schemas/Error"
+    BadRequest:
+      description: "Bad Request"
+      content:
+       application/json:
+         schema:
+           $ref: "#/components/schemas/Error"
+    Forbidden:
+      description: "Forbidden"
+      content:
+       application/json:
+         schema:
+           $ref: "#/components/schemas/Error"
+    Timeout:
+      description: "Timeout"
+      content:
+       application/json:
+         schema:
+           $ref: "#/components/schemas/Error"
+    InternalServerError:
+      description: "Internal Server Error"
+      content:
+       application/json:
+         schema:
+           $ref: "#/components/schemas/Error"
+    NotFound:
+      description: "Not Found"
+      content:
+       application/json:
+         schema:
+           $ref: "#/components/schemas/Error"
+    UnsupportedMediaType:
+      description: "Unsupported Media Type"
+      content:
+       application/json:
+         schema:
+           $ref: "#/components/schemas/Error"
+    ServiceUnavailable:
+      description: "Service Unavailable"
+      content:
+       application/json:
+         schema:
+           $ref: "#/components/schemas/Error"
+    Unauthorized:
+      description: "Unauthorized"
+      content:
+       application/json:
+         schema:
+           $ref: "#/components/schemas/Error"

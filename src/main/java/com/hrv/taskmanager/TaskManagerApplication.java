@@ -1,4 +1,4 @@
-package com.hrv.task_manager;
+package com.hrv.taskmanager;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

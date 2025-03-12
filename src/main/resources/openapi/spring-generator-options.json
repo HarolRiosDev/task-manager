@@ -1,0 +1,16 @@
+{
+    "title": "Task Manager API",
+    "groupId": "com.hrv",
+    "artifactId": "task-manager-api",
+    "artifactVersion": "1.0.0",
+    "invokerPackage": "com.hrv.taskmanager",
+    "basePackage": "com.hrv.taskmanager.web.rest",
+    "configPackage": "com.hrv.taskmanager.rest.config",
+    "apiPackage": "com.hrv.taskmanager.web.rest.api",
+    "modelPackage": "com.hrv.taskmanager.web.rest.dto",
+    "useSpringBoot3": true,
+    "useTags": true,
+    "interfaceOnly": true,
+    "skipDefaultInterface": true,
+    "requestMappingMode": "api_interface"
+}
