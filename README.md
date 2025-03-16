@@ -58,7 +58,7 @@ Task Manager es una API RESTful desarrollada con **Spring Boot** que permite ges
 ## ⚙️ Instalación y Ejecución
 ### 1️⃣ Clonar el repositorio
 ```bash
-git clone https://github.com/tuusuario/task-manager-spring.git
+git clone https://github.com/HarolRiosDev/task-manager-spring.git
 cd task-manager-spring
 ```
 
