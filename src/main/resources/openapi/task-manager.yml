@@ -10,7 +10,7 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
 servers:
-  - url: task-manager/api
+  - url: task-manager/
 tags:
   - name: Authentication
     description: Endpoints to manage authentication.
@@ -31,32 +31,145 @@ paths:
       description: User registration.
       operationId: register
       requestBody:
-        $ref: "#/components/requestBodies/Register"
+        $ref: "#/components/requestBodies/RegisterRequest"
       responses:
-        "200":
-          $ref: "#/components/responses/Ok"
+        "201":
+          $ref: "#/components/responses/RegisterResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
-          $ref: "#/components/responses/Ok"
+          $ref: "#/components/responses/Forbidden"
         "404":
-          $ref: "#/components/responses/Ok"
+          $ref: "#/components/responses/NotFound"
         "415":
-          $ref: "#/components/responses/Ok"
+          $ref: "#/components/responses/UnsupportedMediaType"
         "500":
-          $ref: "#/components/responses/Ok"
+          $ref: "#/components/responses/InternalServerError"
         "503":
-          $ref: "#/components/responses/Ok"
+          $ref: "#/components/responses/ServiceUnavailable"
         "504":
-          $ref: "#/components/responses/Ok"
+          $ref: "#/components/responses/Timeout"  
+  "/api/auth/login":
+    post:
+      tags:
+        - Authentication
+      summary: User log in.
+      description: User log in.
+      operationId: login
+      requestBody:
+        $ref: "#/components/requestBodies/LoginRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/LoginResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "415":
+          $ref: "#/components/responses/UnsupportedMediaType"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+        "504":
+          $ref: "#/components/responses/Timeout"
+  "/api/auth/me":
+    get:
+      tags:
+        - Authentication
+      summary: User authenticate information.
+      description: User authenticate information.
+      operationId: authMe
+      parameters:
+        - $ref: "#/components/parameters/token"
+      responses:
+        "200":
+          $ref: "#/components/responses/AuthMeResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "415":
+          $ref: "#/components/responses/UnsupportedMediaType"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+        "504":
+          $ref: "#/components/responses/Timeout"
+  "/api/auth/forgot_password":
+    post:
+      tags:
+        - Authentication
+      summary: Forgot password endpoint.
+      description: Forgot password endpoint.
+      operationId: forgotPassword
+      requestBody:
+        $ref: "#/components/requestBodies/ForgotPasswordRequest"
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "415":
+          $ref: "#/components/responses/UnsupportedMediaType"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+        "504":
+          $ref: "#/components/responses/Timeout"
+  "/api/auth/change_password":
+    post:
+      tags:
+        - Authentication
+      summary: Change password endpoint.
+      description: Change password endpoint.
+      operationId: changePassword
+      requestBody:
+        $ref: "#/components/requestBodies/ChangePasswordRequest"
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "415":
+          $ref: "#/components/responses/UnsupportedMediaType"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+        "504":
+          $ref: "#/components/responses/Timeout"
 components:
   securitySchemes:
     BearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
+  parameters:
+    token:
+      name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
+        format: JWT
+      example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
   schemas:
     Error:
       type: object
@@ -72,7 +185,69 @@ components:
           type: "string"
           description: "Information about the returned error"  
           example: "Invalid parameters sent on request body"
+    Task:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        title:
+          type: string
+          example: "Complete API Design"
+        description:
+          type: string
+          example: "Define OpenAPI specification for Task Manager."
+        status:
+          type: string
+          enum: [PENDING, IN_PROGRESS, COMPLETED]
+          example: "IN_PROGRESS"
+        dueDate:
+          type: string
+          format: date
+          example: "2024-03-20"
+        assignedTo:
+          $ref: "#/components/schemas/User"
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "John Doe"
+        surname:
+          type: string
+          description: The surname of the user.
+        email:
+          type: string
+          format: email
+          example: "john@example.com"
     RegisterRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: The email of the user.
+        name:
+          type: string
+          description: The name of the user.
+        surname:
+          type: string
+          description: The surname of the user.
+    ForgotPasswordRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: The email of the user.
+        name:
+          type: string
+          description: The name of the user.
+    ChangePasswordRequest:
       type: object
       properties:
         email:
@@ -81,32 +256,72 @@ components:
           description: The email of the user.
         password:
           type: string
-          format: password
           description: The password of the user.
-        name:
+        newPassword:
           type: string
-          description: The name of the user.
-        surname:
+          description: The new password of the user.
+    LoginRequest:
+      type: object
+      properties:
+        email:
           type: string
-          description: The surname of the user.
-        birthdate:
+          format: email
+          description: The email of the user.
+        password:
           type: string
-          format: date
-          description: The birthdate of the user.  
+          description: The password of the user.
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: The JWT token to authenticate the user.
   requestBodies:
-    Register:
+    RegisterRequest:
       description: "Data structure containing information to register the user"
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/RegisterRequest'
+    LoginRequest:
+      description: "Data structure containing information to log in the user"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LoginRequest'
+    ForgotPasswordRequest:
+      description: "Data structure containing information to reset the user password"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ForgotPasswordRequest'
+    ChangePasswordRequest:
+      description: "Data structure containing information to change the user password"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ChangePasswordRequest'
   responses:
-    Ok:
-     description: "OK"
-     content:
-       application/json:
-         schema:
-           $ref: "#/components/schemas/Error"
+    AuthMeResponse:
+      description: "User authenticated successfully"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/User"
+    LoginResponse:
+      description: "User logged in successfully"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/LoginResponse"
+    RegisterResponse:
+      description: "User registered successfully"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/User"
+    NoContent:
+     description: "No content"
     BadRequest:
       description: "Bad Request"
       content:
