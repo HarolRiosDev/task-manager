@@ -1,12 +1,17 @@
 package com.hrv.taskmanager.repository.entity;
 
+import com.hrv.taskmanager.service.util.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -32,12 +37,13 @@ public class UserEntity {
     @Column(name = "seed")
     private String seed;
     @Column(name = "role")
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
     @Column(name = "created_at")
-    private String createdAt;
+    private LocalDate createdAt;
     @Column(name = "updated_at")
-    private String updatedAt;
+    private LocalDate updatedAt;
     @Column(name = "due_date")
-    private String dueDate;
+    private LocalDate dueDate;
 
 }

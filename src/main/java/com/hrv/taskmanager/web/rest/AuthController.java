@@ -40,7 +40,8 @@ public class AuthController implements AuthenticationAPI {
     }
 
     @Override
-    public ResponseEntity<UserDTO> register(RegisterRequestDTO registerRequestDTO) {
-        return null;
+    public ResponseEntity<Void> register(RegisterRequestDTO registerRequestDTO) {
+        authService.register(registerRequestDTO);
+        return ResponseEntity.ok().build();
     }
 }

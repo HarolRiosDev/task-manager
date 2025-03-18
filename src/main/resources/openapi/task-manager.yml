@@ -34,7 +34,7 @@ paths:
         $ref: "#/components/requestBodies/RegisterRequest"
       responses:
         "201":
-          $ref: "#/components/responses/RegisterResponse"
+          $ref: "#/components/responses/NoContent"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -226,6 +226,9 @@ components:
           example: "john@example.com"
     RegisterRequest:
       type: object
+      required:
+        - email
+        - name
       properties:
         email:
           type: string
@@ -239,6 +242,9 @@ components:
           description: The surname of the user.
     ForgotPasswordRequest:
       type: object
+      required:
+        - email
+        - name
       properties:
         email:
           type: string
@@ -249,6 +255,10 @@ components:
           description: The name of the user.
     ChangePasswordRequest:
       type: object
+      required:
+        - email
+        - password
+        - newPassword
       properties:
         email:
           type: string
@@ -262,6 +272,9 @@ components:
           description: The new password of the user.
     LoginRequest:
       type: object
+      required:
+        - email
+        - password
       properties:
         email:
           type: string

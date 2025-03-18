@@ -1,0 +1,18 @@
+package com.hrv.taskmanager.service.mapper;
+
+import com.hrv.taskmanager.repository.entity.UserEntity;
+import com.hrv.taskmanager.web.rest.dto.RegisterRequestDTO;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
+@Mapper
+public interface UserMapper {
+
+    @Mapping(target = "email", source = "email" )
+    @Mapping(target = "name", source = "name")
+    @Mapping(target = "surname", source = "surname")
+    @Mapping(target = "dueDate", expression = "java(java.time.LocalDate.now().plusDays(30))")
+    @Mapping(target = "role", expression = "com.hrv.taskmanager.service.util.java(Role.USER.name())")
+    @Mapping(target = "id", expression = "java(java.util.UUID.randomUUID())")
+    UserEntity toUserEntity(RegisterRequestDTO requestDTO);
+}
