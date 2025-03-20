@@ -12,7 +12,9 @@ public interface UserMapper {
     @Mapping(target = "name", source = "name")
     @Mapping(target = "surname", source = "surname")
     @Mapping(target = "dueDate", expression = "java(java.time.LocalDate.now().plusDays(30))")
-    @Mapping(target = "role", expression = "com.hrv.taskmanager.service.util.java(Role.USER.name())")
+    @Mapping(target = "createdAt", expression = "java(java.time.LocalDate.now())")
+    @Mapping(target = "updatedAt", expression = "java(java.time.LocalDate.now())")
+    @Mapping(target = "role", expression = "java(com.hrv.taskmanager.service.util.Role.USER)")
     @Mapping(target = "id", expression = "java(java.util.UUID.randomUUID())")
     UserEntity toUserEntity(RegisterRequestDTO requestDTO);
 }

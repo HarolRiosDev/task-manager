@@ -229,6 +229,8 @@ components:
       required:
         - email
         - name
+        - surname
+        - password
       properties:
         email:
           type: string
@@ -240,6 +242,9 @@ components:
         surname:
           type: string
           description: The surname of the user.
+        password:
+          type: string
+          description: The password of the user.
     ForgotPasswordRequest:
       type: object
       required:

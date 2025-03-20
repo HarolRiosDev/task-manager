@@ -36,7 +36,7 @@ public class AuthController implements AuthenticationAPI {
 
     @Override
     public ResponseEntity<LoginResponseDTO> login(LoginRequestDTO loginRequestDTO) {
-        return null;
+        return ResponseEntity.ok(authService.login(loginRequestDTO));
     }
 
     @Override

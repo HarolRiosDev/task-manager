@@ -11,7 +11,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -32,10 +31,8 @@ public class UserEntity {
     private String surname;
     @Column(name = "email")
     private String email;
-    @Column(name = "otp")
-    private String otp;
-    @Column(name = "seed")
-    private String seed;
+    @Column(name = "password")
+    private String password;
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
