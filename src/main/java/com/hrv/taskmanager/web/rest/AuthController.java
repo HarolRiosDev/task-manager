@@ -1,6 +1,7 @@
 package com.hrv.taskmanager.web.rest;
 
 import com.hrv.taskmanager.service.AuthService;
+import com.hrv.taskmanager.service.JwtService;
 import com.hrv.taskmanager.web.rest.api.AuthenticationAPI;
 import com.hrv.taskmanager.web.rest.dto.ChangePasswordRequestDTO;
 import com.hrv.taskmanager.web.rest.dto.ForgotPasswordRequestDTO;
@@ -18,20 +19,25 @@ public class AuthController implements AuthenticationAPI {
 
     private final AuthService authService;
 
+    private final JwtService jwtService;
 
     @Override
     public ResponseEntity<UserDTO> authMe(String authorization) {
-        return null;
+        jwtService.validateAndVerifyToken(authorization);
+        return ResponseEntity.ok(authService.authMe(authorization));
     }
 
     @Override
-    public ResponseEntity<Void> changePassword(ChangePasswordRequestDTO changePasswordRequestDTO) {
-        return null;
+    public ResponseEntity<Void> changePassword(String authorization, ChangePasswordRequestDTO changePasswordRequestDTO) {
+        authService.changePassword(authorization, changePasswordRequestDTO);
+        return ResponseEntity.noContent().build();
     }
+
 
     @Override
     public ResponseEntity<Void> forgotPassword(ForgotPasswordRequestDTO forgotPasswordRequestDTO) {
-        return null;
+        authService.forgotPassword(forgotPasswordRequestDTO);
+        return ResponseEntity.noContent().build();
     }
 
     @Override

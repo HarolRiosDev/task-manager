@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.ott.InvalidOneTimeTokenException;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -20,7 +21,7 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 24; // 24 horas
+    private static final long EXPIRATION_TIME = 1000 * 60 * 30; // 24 horas
 
     /**
      * Method to get the signing key
@@ -56,12 +57,33 @@ public class JwtService {
     }
 
     /**
+     * Method to validate and verify a JWT token
+     * @param token the token to validate and verify
+     */
+    public void validateAndVerifyToken(String token) {
+        if(isTokenExpired(token)){
+            throw new InvalidOneTimeTokenException("Token expired");
+        }
+        if (!isTokenValid(token)) {
+            throw new InvalidOneTimeTokenException("Invalid token");
+        }
+    }
+
+    /**
      * Method to extract the email from a JWT token
      * @param token the token to extract the email from
      * @return the extracted email
      */
     public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+    /**
+     * Method to get the raw token from a JWT token
+     * @param token the token to get the raw token from
+     * @return the raw token
+     */
+    public String getRawToken(String token) {
+        return token.substring(7);
     }
 
     /**
@@ -95,6 +117,23 @@ public class JwtService {
                 .build()
                 .parseSignedClaims(token);
         return claimsResolver.apply(claims.getPayload());
+    }
+
+    /**
+     * Method to check if a JWT token is valid
+     * @param token the token to check
+     * @return true if the token is valid, false otherwise
+     */
+    private boolean isTokenValid(String token) {
+        try {
+                Jwts.parser()
+                    .verifyWith(getSigningKey())
+                    .build()
+                    .parseSignedClaims(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
 

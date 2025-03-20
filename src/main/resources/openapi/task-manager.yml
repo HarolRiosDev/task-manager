@@ -136,6 +136,8 @@ paths:
       summary: Change password endpoint.
       description: Change password endpoint.
       operationId: changePassword
+      parameters:
+        - $ref: "#/components/parameters/token"
       requestBody:
         $ref: "#/components/requestBodies/ChangePasswordRequest"
       responses:
