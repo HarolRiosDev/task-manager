@@ -6,7 +6,7 @@ import com.hrv.taskmanager.web.rest.dto.UserDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface UserMapper {
 
     @Mapping(target = "email", source = "email" )

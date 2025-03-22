@@ -28,13 +28,13 @@ paths:
       tags:
         - Authentication
       summary: User registration.
-      description: User registration.
+      description: "User registration. Password requirements:\n\n- Must be between 12 and 20 characters long.\n\n- Must contain at least one lowercase letter (a-z).\n\n- Must contain at least one uppercase letter (A-Z).\n\n- Must contain at least one digit (0-9).\n\n- Must contain at least one special character (@$!%*?&).\n\n- Only letters (A-Za-z), digits (0-9), and special characters (@$!%*?&) are allowed."
       operationId: register
       requestBody:
         $ref: "#/components/requestBodies/RegisterRequest"
       responses:
         "201":
-          $ref: "#/components/responses/NoContent"
+          $ref: "#/components/responses/Created"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -177,16 +177,33 @@ components:
       type: object
       description: "Data structure containing the details for errors"
       properties:
-        code:
+        timestamp:
           type: "string"
-          example: "ERR001"
+          format: "date-time"
+          example: "2021-03-20T10:00:00Z"
+        status:
+          type: "integer"
+          example: 400
+        error:
+          type: "string"
+          example: "Bad Request"
         message:
           type: "string"
           example: "Invalid parameters"
-        description:
+        path:
           type: "string"
-          description: "Information about the returned error"  
-          example: "Invalid parameters sent on request body"
+          example: "/api/auth/register"
+        validationErrors:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              field:
+                type: "string"
+                example: "email"
+              message:
+                type: "string"
+                example: "Invalid email format"
     Task:
       type: object
       properties:
@@ -247,6 +264,9 @@ components:
         password:
           type: string
           description: The password of the user.
+          minLength: 12
+          maxLength: 20
+          pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{12,20}$"
     ForgotPasswordRequest:
       type: object
       required:
@@ -340,8 +360,10 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/User"
+    Created:
+      description: "Created"
     NoContent:
-     description: "No content"
+      description: "No content"
     BadRequest:
       description: "Bad Request"
       content:

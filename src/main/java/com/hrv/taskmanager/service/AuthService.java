@@ -26,6 +26,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final JwtService jwtService;
+    private final EmailService emailService;
 
     /**
      * Service method to register a new user
@@ -39,7 +40,7 @@ public class AuthService {
 
     /**
      * Service method to log in a user
-     * @param loginRequestDTO login request data. @see LoginRequestDTO
+     * @param requestDTO login request data. @see LoginRequestDTO
      * @return login response data. @see LoginResponseDTO
      */
     public LoginResponseDTO login(LoginRequestDTO requestDTO) {
@@ -80,11 +81,15 @@ public class AuthService {
             throw new BadCredentialsException("Invalid credentials");
         }
     }
-
+    /**
+     * Service method to send an email to the user with the reset password link
+     * @param requestDTO the forgot password request data. @see ForgotPasswordRequestDTO
+     */
     public void forgotPassword(ForgotPasswordRequestDTO requestDTO) {
         UserEntity user = userRepository.findByEmailAndName(requestDTO.getEmail(), requestDTO.getName());
         if (user != null) {
-            // send email with password reset link
+            var token = jwtService.generateToken(user.getEmail());
+            emailService.sendForgotPasswordEmail(user.getEmail(),token);
         }
     }
 

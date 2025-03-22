@@ -2,6 +2,7 @@ package com.hrv.taskmanager.web.rest;
 
 import com.hrv.taskmanager.service.AuthService;
 import com.hrv.taskmanager.service.JwtService;
+import com.hrv.taskmanager.service.util.Validation;
 import com.hrv.taskmanager.web.rest.api.AuthenticationAPI;
 import com.hrv.taskmanager.web.rest.dto.ChangePasswordRequestDTO;
 import com.hrv.taskmanager.web.rest.dto.ForgotPasswordRequestDTO;
@@ -47,6 +48,7 @@ public class AuthController implements AuthenticationAPI {
 
     @Override
     public ResponseEntity<Void> register(RegisterRequestDTO registerRequestDTO) {
+        Validation.validateRegisterRequest(registerRequestDTO);
         authService.register(registerRequestDTO);
         return ResponseEntity.ok().build();
     }
