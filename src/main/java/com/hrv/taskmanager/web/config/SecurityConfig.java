@@ -20,7 +20,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login", "/api/auth/register", "/h2-console/**",
+                        .requestMatchers("/api/auth/login", "/api/auth/register",
+                                "/api/auth/forgot_password",
+                                "/h2-console/**",
                                 "/v1/api/**",
                                 "/v2/api-docs",
                                 "/v3/api-docs",

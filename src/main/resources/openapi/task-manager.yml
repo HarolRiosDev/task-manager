@@ -157,6 +157,140 @@ paths:
           $ref: "#/components/responses/ServiceUnavailable"
         "504":
           $ref: "#/components/responses/Timeout"
+  "/api/tasks":
+    post:
+      tags:
+        - Task Management
+      summary: User authenticate information.
+      description: User authenticate information.
+      operationId: createTask
+      parameters:
+        - $ref: "#/components/parameters/token"
+      requestBody:
+        $ref: "#/components/requestBodies/CreateTaskRequest"
+      responses:
+        "201":
+          $ref: "#/components/responses/CreateTaskResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "415":
+          $ref: "#/components/responses/UnsupportedMediaType"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+        "504":
+          $ref: "#/components/responses/Timeout"
+    get:
+      tags:
+        - Task Management
+      summary: User authenticate information.
+      description: User authenticate information.
+      operationId: getTaskList
+      parameters:
+        - $ref: "#/components/parameters/token"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/size"
+        - $ref: "#/components/parameters/sort"
+      responses:
+        "200":
+          $ref: "#/components/responses/TaskListResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "415":
+          $ref: "#/components/responses/UnsupportedMediaType"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+        "504":
+          $ref: "#/components/responses/Timeout"
+  "/api/tasks/{id}":
+    get:
+      tags:
+        - Task Management
+      summary: User authenticate information.
+      description: User authenticate information.
+      operationId: getTask
+      parameters:
+        - $ref: "#/components/parameters/token"
+      responses:
+        "200":
+          $ref: "#/components/responses/TaskResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "415":
+          $ref: "#/components/responses/UnsupportedMediaType"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+        "504":
+          $ref: "#/components/responses/Timeout"
+    put:
+      tags:
+        - Task Management
+      summary: User authenticate information.
+      description: User authenticate information.
+      operationId: updateTask
+      parameters:
+        - $ref: "#/components/parameters/token"
+      requestBody:
+        $ref: "#/components/requestBodies/UpdateTaskRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/UpdateTaskResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "415":
+          $ref: "#/components/responses/UnsupportedMediaType"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+        "504":
+          $ref: "#/components/responses/Timeout"
+    delete:
+      tags:
+        - Task Management
+      summary: User authenticate information.
+      description: User authenticate information.
+      operationId: deleteTask
+      parameters:
+        - $ref: "#/components/parameters/token"
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "415":
+          $ref: "#/components/responses/UnsupportedMediaType"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+        "504":
+          $ref: "#/components/responses/Timeout"
 components:
   securitySchemes:
     BearerAuth:
@@ -172,6 +306,27 @@ components:
         type: string
         format: JWT
       example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+    page:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+      example: 1
+    size:
+      name: size
+      in: query
+      required: false
+      schema:
+        type: integer
+      example: 10
+    sort:
+      name: sort
+      in: query
+      required: false
+      schema:
+        type: string
+      example: -title,+status
   schemas:
     Error:
       type: object
@@ -227,18 +382,39 @@ components:
           example: "2024-03-20"
         assignedTo:
           $ref: "#/components/schemas/User"
+    NewTask:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "Complete API Design"
+        description:
+          type: string
+          example: "Define OpenAPI specification for Task Manager."
+        status:
+          type: string
+          enum: [PENDING, IN_PROGRESS, COMPLETED]
+          example: "IN_PROGRESS"
+        dueDate:
+          type: string
+          format: date
+          example: "2024-03-20"
+        assignedTo:
+          $ref: "#/components/schemas/User"  
     User:
       type: object
       properties:
         id:
-          type: integer
-          example: 1
+          type: string
+          format: uuid
+          example: "a1b2c3d4-e5f6-7890-1234-567890abcdef"
         name:
           type: string
           example: "John Doe"
         surname:
           type: string
           description: The surname of the user.
+          example: "Hawkins"
         email:
           type: string
           format: email
@@ -316,6 +492,62 @@ components:
         token:
           type: string
           description: The JWT token to authenticate the user.
+    TaskListResponse:
+      type: object
+      properties:
+        tasks:
+          type: array
+          items:
+            $ref: "#/components/schemas/Task"
+        links:
+          $ref: "#/components/schemas/Links"
+        meta:
+          $ref: "#/components/schemas/Meta"  
+    Meta:
+      type: object
+      properties:
+        totalItems:
+          type: integer
+          description: Total number of items available.
+          example: 100
+        totalPages:
+          type: integer
+          description: Total number of pages.
+          example: 10
+        currentPage:
+          type: integer
+          description: Current page number.
+          example: 1
+        pageSize:
+          type: integer
+          description: Number of items per page.
+          example: 10
+    Links:
+      type: object
+      properties:
+        self:
+          type: string
+          description: Link to the current page.
+          example: "/api/tasks?page=1&size=10"
+        next:
+          type: string
+          nullable: true
+          description: Link to the next page, if available.
+          example: "/api/tasks?page=2&size=10"
+        prev:
+          type: string
+          nullable: true
+          description: Link to the previous page, if available.
+          example: null
+        first:
+          type: string
+          description: Link to the first page.
+          example: "/api/tasks?page=1&size=10"
+        last:
+          type: string
+          description: Link to the last page.
+          example: "/api/tasks?page=10&size=10"
+
   requestBodies:
     RegisterRequest:
       description: "Data structure containing information to register the user"
@@ -341,7 +573,31 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ChangePasswordRequest'
+    CreateTaskRequest:
+      description: "Data structure containing information to create a new request"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/NewTask"
+    UpdateTaskRequest:
+      description: "Data structure containing information to update a existing task"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Task"  
   responses:
+    UpdateTaskResponse:
+      description: "Data structure containing updated task"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Task"
+    CreateTaskResponse:
+      description: "Task created successfully"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Task"
     AuthMeResponse:
       description: "User authenticated successfully"
       content:
@@ -360,6 +616,18 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/User"
+    TaskResponse:
+      description: Task returned
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Task"
+    TaskListResponse:
+      description: Task returned
+      content:
+        application/json:
+          schema:            
+            $ref: "#/components/schemas/TaskListResponse"
     Created:
       description: "Created"
     NoContent:

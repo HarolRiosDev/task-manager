@@ -11,6 +11,7 @@ import com.hrv.taskmanager.web.rest.dto.LoginResponseDTO;
 import com.hrv.taskmanager.web.rest.dto.RegisterRequestDTO;
 import com.hrv.taskmanager.web.rest.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -50,6 +51,6 @@ public class AuthController implements AuthenticationAPI {
     public ResponseEntity<Void> register(RegisterRequestDTO registerRequestDTO) {
         Validation.validateRegisterRequest(registerRequestDTO);
         authService.register(registerRequestDTO);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

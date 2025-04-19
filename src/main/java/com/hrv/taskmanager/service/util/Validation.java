@@ -24,7 +24,7 @@ public class Validation {
      * @param password the password to validate
      */
     public static void isValidPassword(String password) {
-        if(password != null && !password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\\\d)(?=.*[@$!%*?&])[A-Za-z\\\\d@$!%*?&]{12,20}$")){
+        if(password != null && (password.length() < 12 || password.length() > 20) && password.contains("/")){
             throw new IllegalArgumentException("Invalid password");
         }
     }
