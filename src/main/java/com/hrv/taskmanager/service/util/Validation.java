@@ -2,6 +2,9 @@ package com.hrv.taskmanager.service.util;
 
 import com.hrv.taskmanager.web.rest.dto.RegisterRequestDTO;
 import lombok.experimental.UtilityClass;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
 
 /**
  * Utility class for validation related operations
@@ -55,5 +58,19 @@ public class Validation {
         isValidPassword(requestDTO.getPassword());
         isValidName(requestDTO.getName());
         isValidSurname(requestDTO.getSurname());
+    }
+
+    /**
+     * validate sort value
+     * @param sort the sort value
+     * @param sortBy list of valid values
+     */
+    public static void validateSort(String sort, List<String> sortBy){
+        if(!StringUtils.isEmpty(sort) && (!sort.startsWith("-") || !sort.startsWith("+"))){
+            throw new IllegalArgumentException("Invalid sort direction. Choose between: + (ascending) or - (descending)");
+        }
+        if(!StringUtils.isEmpty(sort) && !sortBy.contains(sort)){
+            throw new IllegalArgumentException("Invalid sort value. Valid values: \n"+ sortBy);
+        }
     }
 }

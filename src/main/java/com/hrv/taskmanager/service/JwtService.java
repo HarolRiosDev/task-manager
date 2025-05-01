@@ -1,7 +1,8 @@
 package com.hrv.taskmanager.service;
-import io.jsonwebtoken.Jwts;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.UUID;
 import java.util.function.Function;
 
 /**
@@ -37,9 +39,10 @@ public class JwtService {
      * @param email the email to generate the token for
      * @return the generated token
      */
-    public String generateToken(String email) {
+    public String generateToken(String email, UUID user) {
         return Jwts.builder()
                 .subject(email)
+                .id(user.toString())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(getSigningKey())
@@ -76,6 +79,11 @@ public class JwtService {
      */
     public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    public UUID extractUserId(String token) {
+        var claim = extractClaim(token, Claims::getId);
+        return UUID.fromString(claim);
     }
     /**
      * Method to get the raw token from a JWT token

@@ -161,16 +161,16 @@ paths:
     post:
       tags:
         - Task Management
-      summary: User authenticate information.
-      description: User authenticate information.
+      summary: Create a new task.
+      description: Create a new task.
       operationId: createTask
       parameters:
         - $ref: "#/components/parameters/token"
       requestBody:
         $ref: "#/components/requestBodies/CreateTaskRequest"
       responses:
-        "201":
-          $ref: "#/components/responses/CreateTaskResponse"
+        "204":
+          $ref: "#/components/responses/NoContent"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -188,14 +188,15 @@ paths:
     get:
       tags:
         - Task Management
-      summary: User authenticate information.
-      description: User authenticate information.
+      summary: Return the task list.
+      description: Return the task list.
       operationId: getTaskList
       parameters:
         - $ref: "#/components/parameters/token"
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/size"
         - $ref: "#/components/parameters/sort"
+        - $ref: "#/components/parameters/assigned"
       responses:
         "200":
           $ref: "#/components/responses/TaskListResponse"
@@ -213,15 +214,16 @@ paths:
           $ref: "#/components/responses/ServiceUnavailable"
         "504":
           $ref: "#/components/responses/Timeout"
-  "/api/tasks/{id}":
+  "/api/tasks/{task_id}":
     get:
       tags:
         - Task Management
-      summary: User authenticate information.
-      description: User authenticate information.
+      summary: Return the task by id.
+      description: Return the task by id.
       operationId: getTask
       parameters:
         - $ref: "#/components/parameters/token"
+        - $ref: "#/components/parameters/taskId"
       responses:
         "200":
           $ref: "#/components/responses/TaskResponse"
@@ -242,11 +244,12 @@ paths:
     put:
       tags:
         - Task Management
-      summary: User authenticate information.
-      description: User authenticate information.
+      summary: Update task information.
+      description: Update task information.
       operationId: updateTask
       parameters:
         - $ref: "#/components/parameters/token"
+        - $ref: "#/components/parameters/taskId"
       requestBody:
         $ref: "#/components/requestBodies/UpdateTaskRequest"
       responses:
@@ -269,11 +272,12 @@ paths:
     delete:
       tags:
         - Task Management
-      summary: User authenticate information.
-      description: User authenticate information.
+      summary: Delete task information.
+      description: Delete task information.
       operationId: deleteTask
       parameters:
         - $ref: "#/components/parameters/token"
+        - $ref: "#/components/parameters/taskId"
       responses:
         "204":
           $ref: "#/components/responses/NoContent"
@@ -306,6 +310,14 @@ components:
         type: string
         format: JWT
       example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+    taskId:
+      name: task_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: UUID
+        example: 269ea5b4-fe9e-494f-8847-71d667ba6c97
     page:
       name: page
       in: query
@@ -326,7 +338,15 @@ components:
       required: false
       schema:
         type: string
-      example: -title,+status
+      example: -title
+    assigned:
+      name: assigned_to
+      in: query
+      required: false
+      schema:
+        type: string
+        format: UUID
+      example: 550e8400-e29b-41d4-a716-446655440000
   schemas:
     Error:
       type: object
@@ -361,6 +381,8 @@ components:
                 example: "Invalid email format"
     Task:
       type: object
+      required:
+        - id
       properties:
         id:
           type: string
@@ -384,6 +406,11 @@ components:
           $ref: "#/components/schemas/User"
     NewTask:
       type: object
+      required:
+        - title
+        - description
+        - status
+        - dueDate
       properties:
         title:
           type: string
@@ -399,8 +426,27 @@ components:
           type: string
           format: date
           example: "2024-03-20"
+    UpdateTask:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "Complete API Design"
+        description:
+          type: string
+          example: "Define OpenAPI specification for Task Manager."
+        status:
+          type: string
+          enum: [ PENDING, IN_PROGRESS, COMPLETED ]
+          example: "IN_PROGRESS"
+        dueDate:
+          type: string
+          format: date
+          example: "2024-03-20"
         assignedTo:
-          $ref: "#/components/schemas/User"  
+          type: string
+          format: uuid
+          example: "120e8400-e29b-41d4-a716-441234440000"
     User:
       type: object
       properties:
@@ -499,9 +545,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Task"
-        links:
-          $ref: "#/components/schemas/Links"
-        meta:
+        metaData:
           $ref: "#/components/schemas/Meta"  
     Meta:
       type: object
@@ -522,32 +566,6 @@ components:
           type: integer
           description: Number of items per page.
           example: 10
-    Links:
-      type: object
-      properties:
-        self:
-          type: string
-          description: Link to the current page.
-          example: "/api/tasks?page=1&size=10"
-        next:
-          type: string
-          nullable: true
-          description: Link to the next page, if available.
-          example: "/api/tasks?page=2&size=10"
-        prev:
-          type: string
-          nullable: true
-          description: Link to the previous page, if available.
-          example: null
-        first:
-          type: string
-          description: Link to the first page.
-          example: "/api/tasks?page=1&size=10"
-        last:
-          type: string
-          description: Link to the last page.
-          example: "/api/tasks?page=10&size=10"
-
   requestBodies:
     RegisterRequest:
       description: "Data structure containing information to register the user"
@@ -584,16 +602,10 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/Task"  
+            $ref: "#/components/schemas/UpdateTask"
   responses:
     UpdateTaskResponse:
       description: "Data structure containing updated task"
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/Task"
-    CreateTaskResponse:
-      description: "Task created successfully"
       content:
         application/json:
           schema:

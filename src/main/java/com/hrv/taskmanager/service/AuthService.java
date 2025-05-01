@@ -47,7 +47,7 @@ public class AuthService {
         UserEntity user = userRepository.findByEmail(requestDTO.getEmail());
         if (user != null && passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())) {
             LoginResponseDTO responseDTO = new LoginResponseDTO();
-            responseDTO.setToken(jwtService.generateToken(user.getEmail()));
+            responseDTO.setToken(jwtService.generateToken(user.getEmail(), user.getId()));
             return responseDTO;
         }
         throw new BadCredentialsException("Invalid credentials");
@@ -82,13 +82,13 @@ public class AuthService {
         }
     }
     /**
-     * Service method to send an email to the user with the reset password link
+     * Service method to email the user with the reset password link
      * @param requestDTO the forgot password request data. @see ForgotPasswordRequestDTO
      */
     public void forgotPassword(ForgotPasswordRequestDTO requestDTO) {
         UserEntity user = userRepository.findByEmailAndName(requestDTO.getEmail(), requestDTO.getName());
         if (user != null) {
-            var token = jwtService.generateToken(user.getEmail());
+            var token = jwtService.generateToken(user.getEmail(), user.getId());
             emailService.sendForgotPasswordEmail(user.getEmail(),token);
         }
     }

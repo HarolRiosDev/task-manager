@@ -1,11 +1,20 @@
 package com.hrv.taskmanager.repository.entity;
 
+import com.hrv.taskmanager.service.util.TaskStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDate;
+import java.util.UUID;
 
 /**
  * TaskEntity
@@ -16,21 +25,25 @@ import lombok.Setter;
 @Table(name = "tasks")
 public class TaskEntity {
     @Id
-    private String id;
+    @Column(name = "id")
+    private UUID id;
     @Column(name = "title")
     private String title;
     @Column(name = "description")
     private String description;
     @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private TaskStatus status;
     @Column(name = "created_at")
-    private String createdAt;
+    private LocalDate createdAt;
     @Column(name = "updated_at")
-    private String updatedAt;
+    private LocalDate updatedAt;
     @Column(name = "due_date")
-    private String dueDate;
-    @Column(name = "assigned_to")
-    private String assignedTo;
-    @Column(name = "created_by")
-    private String createdBy;
+    private LocalDate dueDate;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assigned_to")
+    private UserEntity assignedTo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by")
+    private UserEntity createdBy;
 }
