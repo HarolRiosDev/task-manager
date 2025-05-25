@@ -295,6 +295,116 @@ paths:
           $ref: "#/components/responses/ServiceUnavailable"
         "504":
           $ref: "#/components/responses/Timeout"
+  "/api/users":
+    get:
+      tags:
+        - User Management
+      summary: Return the user list.
+      description: Return the user list.
+      operationId: getUserList
+      parameters:
+        - $ref: "#/components/parameters/token"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/size"
+        - $ref: "#/components/parameters/sort"
+      responses:
+        "200":
+          $ref: "#/components/responses/TaskListResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "415":
+          $ref: "#/components/responses/UnsupportedMediaType"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+        "504":
+          $ref: "#/components/responses/Timeout"
+  "/api/users/{user_id}":
+    get:
+      tags:
+        - User Management
+      summary: Return the user by id.
+      description: Return the user by id.
+      operationId: getUserById
+      parameters:
+        - $ref: "#/components/parameters/token"
+        - $ref: "#/components/parameters/userId"
+      responses:
+        "200":
+          $ref: "#/components/responses/TaskResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "415":
+          $ref: "#/components/responses/UnsupportedMediaType"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+        "504":
+          $ref: "#/components/responses/Timeout"
+    put:
+      tags:
+        - User Management
+      summary: Update user information.
+      description: Update user information.
+      operationId: updateUser
+      parameters:
+        - $ref: "#/components/parameters/token"
+        - $ref: "#/components/parameters/userId"
+      requestBody:
+        $ref: "#/components/requestBodies/UpdateTaskRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/UpdateTaskResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "415":
+          $ref: "#/components/responses/UnsupportedMediaType"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+        "504":
+          $ref: "#/components/responses/Timeout"
+    delete:
+      tags:
+        - User Management
+      summary: Delete user information.
+      description: Delete user information.
+      operationId: deleteUser
+      parameters:
+        - $ref: "#/components/parameters/token"
+        - $ref: "#/components/parameters/userId"
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "415":
+          $ref: "#/components/responses/UnsupportedMediaType"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+        "504":
+          $ref: "#/components/responses/Timeout"
 components:
   securitySchemes:
     BearerAuth:
@@ -343,6 +453,14 @@ components:
       name: assigned_to
       in: query
       required: false
+      schema:
+        type: string
+        format: UUID
+      example: 550e8400-e29b-41d4-a716-446655440000
+    userId:
+      name: user_id
+      in: path
+      required: true
       schema:
         type: string
         format: UUID
